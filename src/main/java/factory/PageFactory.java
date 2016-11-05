@@ -15,9 +15,15 @@ import java.util.Iterator;
 import java.util.Set;
 
 
+/**
+ * Open the input file for reading and create page objects out of it.
+ *
+ * @author Dinu Ganea
+ */
 public class PageFactory implements Loggable {
 
-    private static final char DELIMITER_CHAR = '¤';
+    private static final char LINE_DELIMITER_CHAR = '¤';
+    private static final String VALUES_DELIMITER = "\t";
 
     /**
      * Open a buffered stream for the filepath
@@ -56,6 +62,7 @@ public class PageFactory implements Loggable {
             e = ioE;
         }
 
+        // throw the exception further. should be caught outside this method for more information
         throw e;
     }
 
@@ -74,52 +81,70 @@ public class PageFactory implements Loggable {
 
         Iterator<String> iterator = reader.lines().iterator();
 
+        logger.info("Reading the source file line by line and creating page objects");
+
+        // set of pages to be returned
         Set<Page> pages = new HashSet<>();
 
+        // will contain a single html article
         StringBuilder rawPageHtml = null;
 
-        Page page = new Page();
-
-        logger.info("Reading the source file line by line");
+        // declaration of the page object
+        Page page = null;
 
         // iterate through file's lines
         while (iterator.hasNext()) {
+            // read the line
             String line = iterator.next();
 
             // If line string contains the delimiter char, should be checked if it's the begging or end of the html page
-            if (line.indexOf(DELIMITER_CHAR) >= 0) {
+            if (line.indexOf(LINE_DELIMITER_CHAR) >= 0) {
                 // the line string contains only one char (the delimiter char)
                 // this means that we should empty the content holder and add the page (if not null) to the return set
                 if (line.length() == 1) {
-
-                    if (rawPageHtml != null) {
-                        Set<String> categories = LinkExtraction.getCategories(rawPageHtml.toString());
-                        page.setCategories(categories);
+                    // by input definition, the page object shouldn't be null here
+                    if (page == null) {
+                        // even if it happens for the page to be null, skip this routine and show a warning message
+                        logger.warn("Null page object found. Please check the input file");
+                        continue;
                     }
+
+                    // time to get extract the categories
+                    Set<String> categories = LinkExtraction.getCategories(rawPageHtml.toString(), page.getPageID());
+
+                    page.setCategories(categories);
 
                     pages.add(page);
 
+                    // release these objects. it's not guaranteed that the GC will do it's job right away, but
+                    // try a sweet little RAM optimisation. (WE LOVE YOU RAM)
                     page = null;
                     rawPageHtml = null;
+
                     // we're done here
                     continue;
                 } else {
                     // instantiate a new string builder object (works faster then a simple String object), and spline the header line
                     rawPageHtml = new StringBuilder();
-                    String[] info = line.split("\t");
+
+                    // split the string line into one array. the delimiter should represent the one from the input file
+                    String[] info = line.split(VALUES_DELIMITER);
 
                     // the position of the following elements are by default defined. if they are changed in the source file
-                    // these indexes should be modified
+                    // these indexes should be modified too
                     String articleID = info[1];
-                    String namespaceID = info[2];
+                    int namespaceID = Integer.parseInt(info[2]);
                     String articleName = info[3];
 
                     // create a new page object
                     page = new Page(namespaceID, articleID, articleName);
-
-                    // get categories
-                    // Todo: use LinkExtraction class (waiting for the commit)
                 }
+            }
+
+            // should actually never occur. A check is never bad though.
+            if (rawPageHtml == null) {
+                logger.warn("Oooops. HTML container is somehow empty. Please check the input file");
+                continue;
             }
 
             // append line to the string builder (the actual html page)

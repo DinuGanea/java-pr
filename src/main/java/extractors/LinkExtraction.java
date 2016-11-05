@@ -10,20 +10,23 @@ import java.util.HashSet;
 
 /**
  * Used initially only to extract categories out of a html page
+ *
+ * @author Ionut Urs
  */
 public class LinkExtraction implements Loggable {
 
-    // Path to the categories in html article
+    // Path to the categories in html article (css selector)
     protected static final String CATS_SELECTOR = "div#catlinks ul li a";
 
     /**
      * Retrieve categories from html content
      *
      * @param rawContent - an entire article html page
-     * @return - set of categories (the order won't be guaranteed, but it's not a problem though)
+     * @param pageID - id of the page object. Used only for logging reference
+     * @return - set of categories (the order won't be guaranteed, but it's not a problem)
      */
-    public static HashSet<String> getCategories(String rawContent) {
-        HashSet<String> categories = new HashSet<String>();
+    public static HashSet<String> getCategories(String rawContent, String pageID) {
+        HashSet<String> categories = new HashSet<>();
 
         // Convert raw html code to DOM document
         Document doc = Jsoup.parse(rawContent);
@@ -33,7 +36,13 @@ public class LinkExtraction implements Loggable {
 
         for (Element link : links) {
             // Parse through each element an get it's title attribute (the actual category)
+            // please make sure that the attribute name match the input format
             categories.add(link.attr("title"));
+        }
+
+        // Warn the user that this page doesn't seem to have any category declared
+        if (categories.isEmpty()) {
+            logger.warn(String.format("No categories for the page %s!", pageID));
         }
 
         return categories;

@@ -17,14 +17,26 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.util.Set;
 
+/**
+ * Used to write export objects (only file export is implemented right now)
+ *
+ * @author Sonia Rooshenas
+ */
 public class PageExport implements Loggable {
 
+    // XML element names
     protected static final String ROOT_NAME = "pages";
     protected static final String RECORD_NAME = "page";
 
+    private String outFileName;
+
+    public PageExport(String outFileName) {
+        this.outFileName = outFileName;
+    }
+
 
     /**
-     * Write a set of page objects to a xml file
+     * Export a set of page objects to a xml file
      *
      * @param pageSet - set of page objects
      * @throws Exception
@@ -48,24 +60,25 @@ public class PageExport implements Loggable {
 
                 // namespaceID attribute
                 Attr attr = doc.createAttribute(Page.NS_EL_NAME);
-                attr.setValue(p.getNamespaceID());
+                attr.setValue(p.getNamespaceID() + "");
                 pageElement.setAttributeNode(attr);
 
-                // articleID attribute
-                attr = doc.createAttribute(Page.ART_ID_EL_NAME);
-                attr.setValue(p.getArticleID());;
+                // pageID attribute
+                attr = doc.createAttribute(Page.PAGE_ID_EL_NAME);
+                attr.setValue(p.getPageID());;
                 pageElement.setAttributeNode(attr);
 
-                // articleTitle attribute
-                attr = doc.createAttribute(Page.ART_TITLE_EL_NAME);
-                attr.setValue(p.getArticleTitle());
+                // pageTitle attribute
+                attr = doc.createAttribute(Page.PAGE_TITLE_EL_NAME);
+                attr.setValue(p.getPageTitle());
                 pageElement.setAttributeNode(attr);
 
-                // create categories parent element
+                // create categories' parent element
                 Element categories = doc.createElement(Page.CAT_ROOT_EL_NAME);
 
                 // Parse each category and create an element for it
                 for (String catName : p.getCategories()) {
+                    // the category element and it's children could be changed easily from the method
                     // append each category to its parent
                     categories.appendChild(createCategory(catName, doc));
                 }
@@ -81,13 +94,15 @@ public class PageExport implements Loggable {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
 
+            // Make sure the output file will be appropriate formatted. It's silly to have whole XML into a single line
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
+            // Create an input source form the DOM document
             DOMSource source = new DOMSource(doc);
 
             // initiating a stream to a specific file
-            StreamResult result = new StreamResult(new File("pages.xml"));
+            StreamResult result = new StreamResult(new File(this.outFileName));
 
             // writing stream-wise to output file
             transformer.transform(source, result);
@@ -95,7 +110,7 @@ public class PageExport implements Loggable {
 
         } catch (Exception e) {
             // this actually treats 3 Exceptions, but it's no need to handle them all separately
-            logger.error("Couldn't write page objects to XML file");
+            logger.error("Couldn't write page objects to XML file. Check the log for more details");
             throw e;
         }
 

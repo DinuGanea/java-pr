@@ -4,23 +4,55 @@ import model.Page;
 import output.PageExport;
 import util.Loggable;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
-
+/**
+ * The outstanding MAIN CLAAAASSS :D
+ * <p>
+ * Defines the entire workflow
+ * <p>
+ * This will grow into a strong Monolith.
+ *
+ * @author Dinu Ganea
+ */
 public class Main implements Loggable {
 
     public static void main(String args[]) {
 
-
-        String filepath = Main.class.getResource("wikipedia_de_prgpr_subset.txt").getPath();
-
+        // The last try-catch hope of this application. Log every exception that it's thrown and print the stack trace
         try {
+            String input = args[0];
+            String output = args[1];
+
+
+            Path path = Paths.get(input);
+
+            System.out.println(path.normalize().toString());
+
+
+            System.exit(1);
+
+
+            String filepath = Main.class.getResource("wikipedia_de_prgpr_subset.txt").getPath();
+
+            // get the pages
             Set<Page> pages = PageFactory.build(filepath);
-            PageExport ep = new PageExport();
+
+            // create an export instance
+            PageExport ep = new PageExport(output);
+
+            // export files to xml
             ep.exportToXML(pages);
+
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Catch explicitly the input parameter exception
+            logger.error("Please make sure to provide the path to the input file and the name of the output file");
         } catch (Exception e) {
-            logger.info("An error occured!");
+            logger.error("An error occured!");
             e.printStackTrace();
         }
 
