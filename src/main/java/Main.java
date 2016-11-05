@@ -25,22 +25,23 @@ public class Main implements Loggable {
 
         // The last try-catch hope of this application. Log every exception that it's thrown and print the stack trace
         try {
+
+            // Mark the start of a new session
+            // Nice to have a delimited logging for each run
+            logger.info("==========================================================");
+            logger.info("====================STARTING A NEW RUN====================");
+            logger.info("==========================================================");
+
+            // input
             String input = args[0];
+            // output
             String output = args[1];
 
-
+            // Create the path
             Path path = Paths.get(input);
 
-            System.out.println(path.normalize().toString());
-
-
-            System.exit(1);
-
-
-            String filepath = Main.class.getResource("wikipedia_de_prgpr_subset.txt").getPath();
-
             // get the pages
-            Set<Page> pages = PageFactory.build(filepath);
+            Set<Page> pages = PageFactory.build(path);
 
             // create an export instance
             PageExport ep = new PageExport(output);
@@ -52,8 +53,8 @@ public class Main implements Loggable {
             // Catch explicitly the input parameter exception
             logger.error("Please make sure to provide the path to the input file and the name of the output file");
         } catch (Exception e) {
-            logger.error("An error occured!");
-            e.printStackTrace();
+            logger.error("An error occurred!");
+            logger.error(e.getMessage(), e);
         }
 
     }

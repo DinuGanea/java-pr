@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -22,21 +21,29 @@ import java.util.Set;
  */
 public class PageFactory implements Loggable {
 
+    // Used to specify the max amount of read pages (used currently only to log the progress)
+    private static final int PAGE_BLOCK_SIZE = 10000;
+
+    // Path to the categories in html article (css selector)
+    // Could be declared in LinkExtraction, but we try to keep that class as context-independent as possible
+    private static final String DEFAULT_CATS_SELECTOR = "div#catlinks ul li a";
+
+    // Marks the begin/end of an article
     private static final char LINE_DELIMITER_CHAR = '¤';
+
+    // Separates head line values of an article (page)
     private static final String VALUES_DELIMITER = "\t";
 
     /**
      * Open a buffered stream for the filepath
      *
-     * @param pathToFile - path to the file that is being imported
-     * @return - buffered reader objects
+     * @param path path object to the file that is being imported
+     * @return buffered reader objects
      * @throws Exception
      */
-    protected static BufferedReader openForRead(String pathToFile) throws Exception {
+    protected static BufferedReader openForRead(Path path) throws Exception {
 
         Exception e;
-
-        Path path = null;
 
         /**
          * A BufferedReader object will be used to read the file line by line. We don't want to load it completely into RAM
@@ -45,20 +52,20 @@ public class PageFactory implements Loggable {
 
         try {
             logger.info("Try to open the file");
-            path = Paths.get(pathToFile);
 
+            // Open a stream to the input file
             reader = Files.newBufferedReader(path);
 
-            logger.info(String.format("File %s opened for reading", path.getFileName()));
+            logger.info(String.format("File \"%s\" opened for reading", path.getFileName()));
 
             return reader;
 
         } catch (InvalidPathException ipE) {
-            logger.error(String.format("File not found in %s", pathToFile));
+            logger.error(String.format("File not found in \"%s\"", path.normalize().toAbsolutePath()));
             e = ipE;
 
         } catch (IOException ioE) {
-            logger.error(String.format("Cannot read file %s", path.getFileName()));
+            logger.error(String.format("Cannot read file \"%s\"", path.getFileName()));
             e = ioE;
         }
 
@@ -70,14 +77,14 @@ public class PageFactory implements Loggable {
     /**
      * Read the file and convert each entry to a page object
      *
-     * @param pathToFile - path to the source file
-     * @return - set of page objects
+     * @param path path object to the source file
+     * @return set of page objects
      * @throws Exception
      */
-    public static Set<Page> build(String pathToFile) throws Exception {
+    public static Set<Page> build(Path path) throws Exception {
 
         // instantiate the reader object
-        BufferedReader reader = openForRead(pathToFile);
+        BufferedReader reader = openForRead(path);
 
         Iterator<String> iterator = reader.lines().iterator();
 
@@ -91,6 +98,9 @@ public class PageFactory implements Loggable {
 
         // declaration of the page object
         Page page = null;
+
+        // Counter used for logging
+        int pageCounter = 0;
 
         // iterate through file's lines
         while (iterator.hasNext()) {
@@ -110,9 +120,14 @@ public class PageFactory implements Loggable {
                     }
 
                     // time to get extract the categories
-                    Set<String> categories = LinkExtraction.getCategories(rawPageHtml.toString(), page.getPageID());
+                    Set<String> categories = LinkExtraction.extractCategories(rawPageHtml.toString(), DEFAULT_CATS_SELECTOR, page.getPageID());
 
                     page.setCategories(categories);
+
+                    // Log block-wise number of pages that were till now converted
+                    if(++pageCounter % PAGE_BLOCK_SIZE == 0) {
+                        logger.info(String.format("%d page objects created", pageCounter));
+                    }
 
                     pages.add(page);
 
@@ -152,7 +167,7 @@ public class PageFactory implements Loggable {
         }
 
 
-        logger.info(String.format("%d page objects successfully created.", pages.size()));
+        logger.info(String.format("A total of %d page objects successfully created.", pages.size()));
 
         return pages;
     }

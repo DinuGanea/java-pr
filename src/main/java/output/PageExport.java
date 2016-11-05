@@ -15,7 +15,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Set;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Used to write export objects (only file export is implemented right now)
@@ -38,10 +40,16 @@ public class PageExport implements Loggable {
     /**
      * Export a set of page objects to a xml file
      *
-     * @param pageSet - set of page objects
+     * @param pageSet set of page objects
      * @throws Exception
      */
     public void exportToXML(Set<Page> pageSet) throws Exception {
+
+        // Needed for logging
+        int pagesNr = pageSet.size();
+
+        logger.info(String.format("Received %d page objects to export", pagesNr));
+        logger.info("Parsing pages and start exporting");
 
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -96,17 +104,30 @@ public class PageExport implements Loggable {
 
             // Make sure the output file will be appropriate formatted. It's silly to have whole XML into a single line
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            // Set the amount of ident (go with 2 by default)
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
             // Create an input source form the DOM document
             DOMSource source = new DOMSource(doc);
 
+            logger.info(String.format("Creating the output file \"%s\"", this.outFileName));
+
+            // Creating the output file
+            File output = new File(this.outFileName);
+            // Make sure to construct the path to the file
+            if (!output.getParentFile().exists() && !output.getParentFile().mkdirs()) {
+                throw new Exception("Cannot create the path to the output file!");
+            }
+
             // initiating a stream to a specific file
-            StreamResult result = new StreamResult(new File(this.outFileName));
+            StreamResult result = new StreamResult(output);
+
+            logger.info("Saving xml content to file");
 
             // writing stream-wise to output file
             transformer.transform(source, result);
 
+            logger.info("Output file successfully populated!");
 
         } catch (Exception e) {
             // this actually treats 3 Exceptions, but it's no need to handle them all separately
@@ -119,9 +140,9 @@ public class PageExport implements Loggable {
     /**
      * Create a category element by provided name and DOM element
      *
-     * @param catName - category name
-     * @param doc - dom document
-     * @return - category xml element
+     * @param catName category name
+     * @param doc dom document
+     * @return category xml element
      */
     public Element createCategory(String catName, Document doc) {
         Element category = doc.createElement(Page.CAT_EL_NAME);

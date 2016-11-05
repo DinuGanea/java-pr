@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -27,9 +28,9 @@ public class Page {
     /**
      * Page constructor.
      *
-     * @param namespaceID - page namespace id
-     * @param pageID - page id
-     * @param pageTitle - page title
+     * @param namespaceID page namespace id
+     * @param pageID page id
+     * @param pageTitle page title
      */
     public Page(int namespaceID, String pageID, String pageTitle) {
         this.namespaceID = namespaceID;
@@ -38,35 +39,35 @@ public class Page {
     }
 
     /**
-     * @return - page namespace id
+     * @return page namespace id
      */
     public int getNamespaceID() {
         return namespaceID;
     }
 
     /**
-     * @param namespaceID - page namespace id
+     * @param namespaceID page namespace id
      */
     public void setNamespaceID(int namespaceID) {
         this.namespaceID = namespaceID;
     }
 
     /**
-     * @return - page id
+     * @return page id
      */
     public String getPageID() {
         return pageID;
     }
 
     /**
-     * @param pageID - page id
+     * @param pageID page id
      */
     public void setPageID(String pageID) {
         this.pageID = pageID;
     }
 
     /**
-     * @return - title of page
+     * @return title of page
      */
     public String getPageTitle() {
         return pageTitle;
@@ -80,14 +81,14 @@ public class Page {
     }
 
     /**
-     * @return - set of page categories
+     * @return set of page categories
      */
     public Set<String> getCategories() {
         return categories;
     }
 
     /**
-     * @param categories - categories' set
+     * @param categories categories' set
      */
     public void setCategories(Set<String> categories) {
         this.categories = categories;
@@ -100,6 +101,35 @@ public class Page {
      */
     public String toString() {
         return String.format("%s %s %s", namespaceID, pageID, pageTitle);
+    }
+
+    /**
+     * Compare this to another object
+     *
+     * @param obj potential page object
+     * @return true if namespaceID and title are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof Page)) {
+            return false;
+        } else {
+            if (this.namespaceID == ((Page) obj).getNamespaceID() && this.pageTitle.equals(((Page) obj).getPageTitle())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Create hash code for a page instance
+     *
+     * @return hash code out of namespaceID and pageTitle
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(namespaceID, pageTitle);
     }
 
 }

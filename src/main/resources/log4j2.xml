@@ -2,11 +2,11 @@
 <configuration status="WARN">
     <appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level - %msg%n"/>
+            <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level - %msg%n"/>
         </Console>
 
-        <File name="LogFile" fileName="logs/app.log">
-            <PatternLayout pattern="%d{yyyy-mm-dd HH:mm:ss.SSS} [%t] %-5level - %msg%n"/>
+        <File name="LogFile" fileName="wikiXtractor/wikiXtractor.log">
+            <PatternLayout pattern="%d{yyyy-mm-dd HH:mm:ss} [%t] %-5level - %msg%n"/>
         </File>
     </appenders>
 
