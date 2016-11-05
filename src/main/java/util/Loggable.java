@@ -7,6 +7,8 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Provides logging objects and evt. functionality.
+ *
+ * @author Dinu Ganea
  */
 public interface Loggable {
 
