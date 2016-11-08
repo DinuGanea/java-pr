@@ -115,7 +115,7 @@ public class PageExport implements Loggable {
             // Creating the output file
             File output = new File(this.outFileName);
             // Make sure to construct the path to the file
-            if (!output.getParentFile().exists() && !output.getParentFile().mkdirs()) {
+            if (output.getParentFile() !=null && !output.getParentFile().exists() && !output.getParentFile().mkdirs()) {
                 throw new Exception("Cannot create the path to the output file!");
             }
 
