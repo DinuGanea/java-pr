@@ -1,4 +1,4 @@
-package util;
+package wikiXtractor.util;
 
 
 import org.apache.logging.log4j.LogManager;

@@ -1,11 +1,12 @@
-package output;
+package wikiXtractor.output;
 
 
-import model.Page;
+import wikiXtractor.model.Category;
+import wikiXtractor.model.Page;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import util.Loggable;
+import wikiXtractor.util.Loggable;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -15,9 +16,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.Set;
-import java.util.zip.ZipOutputStream;
 
 /**
  * Used to write export objects (only file export is implemented right now)
@@ -85,10 +84,10 @@ public class PageExport implements Loggable {
                 Element categories = doc.createElement(Page.CAT_ROOT_EL_NAME);
 
                 // Parse each category and create an element for it
-                for (String catName : p.getCategories()) {
+                for (Category cat : p.getCategories()) {
                     // the category element and it's children could be changed easily from the method
                     // append each category to its parent
-                    categories.appendChild(createCategory(catName, doc));
+                    categories.appendChild(createCategory(cat.getName(), doc));
                 }
 
                 // add categories to the page
@@ -115,7 +114,7 @@ public class PageExport implements Loggable {
             // Creating the output file
             File output = new File(this.outFileName);
             // Make sure to construct the path to the file
-            if (output.getParentFile() !=null && !output.getParentFile().exists() && !output.getParentFile().mkdirs()) {
+            if (output.getParentFile() != null && !output.getParentFile().exists() && !output.getParentFile().mkdirs()) {
                 throw new Exception("Cannot create the path to the output file!");
             }
 

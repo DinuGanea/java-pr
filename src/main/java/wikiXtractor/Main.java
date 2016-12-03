@@ -1,13 +1,12 @@
+package wikiXtractor;
 
-import factory.PageFactory;
-import model.Page;
-import output.PageExport;
-import util.Loggable;
+import wikiXtractor.factory.PageFactory;
+import wikiXtractor.model.Page;
+import wikiXtractor.output.PageExport;
+import wikiXtractor.util.Loggable;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -20,6 +19,8 @@ import java.util.Set;
  * @author Dinu Ganea
  */
 public class Main implements Loggable {
+
+    public static final String DOMAIN_NAME = "wikiXtractor";
 
     public static void main(String args[]) {
 

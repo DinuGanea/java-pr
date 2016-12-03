@@ -1,8 +1,10 @@
-package factory;
+package wikiXtractor.factory;
 
-import extractors.LinkExtraction;
-import model.Page;
-import util.Loggable;
+import wikiXtractor.extractors.LinkExtraction;
+import wikiXtractor.model.Page;
+import wikiXtractor.extractors.LinkExtraction;
+import wikiXtractor.model.Page;
+import wikiXtractor.util.Loggable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -122,7 +124,10 @@ public class PageFactory implements Loggable {
                     // time to get extract the categories
                     Set<String> categories = LinkExtraction.extractCategories(rawPageHtml.toString(), DEFAULT_CATS_SELECTOR, page.getPageID());
 
-                    page.setCategories(categories);
+                    // Todo: don't forget to add category objects
+                    //page.setCategories(categories);
+
+                    page.setHtmlContent(rawPageHtml.toString());
 
                     // Log block-wise number of pages that were till now converted
                     if(++pageCounter % PAGE_BLOCK_SIZE == 0) {

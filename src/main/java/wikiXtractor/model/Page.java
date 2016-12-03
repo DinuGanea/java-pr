@@ -1,4 +1,7 @@
-package model;
+package wikiXtractor.model;
+
+import org.neo4j.ogm.annotation.NodeEntity;
+import org.neo4j.ogm.annotation.Relationship;
 
 import java.util.Objects;
 import java.util.Set;
@@ -8,7 +11,8 @@ import java.util.Set;
  *
  * @author Delara Nasri
  */
-public class Page {
+@NodeEntity
+public class Page extends Entity {
 
     /**
      * Needed for XML definition later on (PageExport class)
@@ -23,14 +27,23 @@ public class Page {
     private int namespaceID;
     private String pageID;
     private String pageTitle;
-    private Set<String> categories;
+    private String htmlContent;
+
+    @Relationship(type = "HAS_CATEGORY")
+    private Set<Category> categories;
+
+
+    public Page() {
+
+    }
+
 
     /**
      * Page constructor.
      *
      * @param namespaceID page namespace id
-     * @param pageID page id
-     * @param pageTitle page title
+     * @param pageID      page id
+     * @param pageTitle   page title
      */
     public Page(int namespaceID, String pageID, String pageTitle) {
         this.namespaceID = namespaceID;
@@ -83,15 +96,30 @@ public class Page {
     /**
      * @return set of page categories
      */
-    public Set<String> getCategories() {
+    public Set<Category> getCategories() {
         return categories;
     }
 
     /**
      * @param categories categories' set
      */
-    public void setCategories(Set<String> categories) {
+    public void setCategories(Set<Category> categories) {
         this.categories = categories;
+    }
+
+
+    /**
+     * @return html content of the page
+     */
+    public String getHtmlContent() {
+        return htmlContent;
+    }
+
+    /**
+     * @param htmlContent - html content of one single article
+     */
+    public void setHtmlContent(String htmlContent) {
+        this.htmlContent = htmlContent;
     }
 
     /**

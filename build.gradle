@@ -1,6 +1,12 @@
 // Project version (effectively milestone)
 version '1.0'
 
+// Neo4j version
+def neo4jVersion = "3.0.0"
+
+// Object-Graph mapping version
+def ogmVersion = "2.0.2"
+
 apply plugin: 'java'
 
 // Min. java version needed to run the project
@@ -45,4 +51,7 @@ dependencies {
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.7'
     compile 'org.jsoup:jsoup:1.10.1'
+    compile "org.neo4j:neo4j-ogm-core:${ogmVersion}"
+    compile "org.neo4j:neo4j-ogm-http-driver:${ogmVersion}"
+    compile "org.neo4j:neo4j:${neo4jVersion}"
 }
