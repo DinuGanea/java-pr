@@ -44,28 +44,40 @@ public class Main implements Loggable {
         session.beginTransaction();
 
         try {
-            PageService ps = new PageService<Page>(session, Page.class);
+            PageService ps = new PageService<>(session, Page.class);
+
+            Article article = new Article(0, "123", "title_article");
+            Category category = new Category(14, "124", "title_category");
+            Category caat2 = new Category(14, "125", "title_subcategory");
+
+            category.addSubcategory(caat2);
+
+            //cs.createOrUpdate(category);
+
+            article.addCategory(category);
+
+            ps.createOrUpdate(article);
+
+            Article a = (Article) ps.find(0, "title_article");
+
+            System.out.println(a);
+
+            for (Category c : a.getCategories()) {
+                System.out.println(c);
+                System.out.println("Subcategories:");
+                for (Category c1: c.getSubcategories()) {
+                    System.out.println(c1);
+                }
+            }
+
 
         } catch (Exception e) {
-
+            System.out.println("WTF?");
+            e.printStackTrace();
         }
 
+        System.out.println("\n");
 
-     //  Page page = new Article(0, "123", "title");
-      // page = new Category(14, "124", "Dasdsa");
-
-       // ps.createOrUpdate(page);
-
-
-        /*for (int i = 0; i < 10000; i++) {
-            System.out.println(ps.find(0, "title" + i));
-        }*/
-
-        session.getTransaction().commit();
-
-        Iterable<Page> pages = session.loadAll(Page.class); //ps.findAll();
-
-        pages.forEach(System.out::println);
 
         /* try {
             session.beginTransaction();

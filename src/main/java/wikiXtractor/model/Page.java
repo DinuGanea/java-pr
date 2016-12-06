@@ -94,7 +94,6 @@ public abstract class Page extends Entity {
      * @return string conversion of the object
      */
     public String toString() {
-        System.out.println("test");
         return String.format("%s %s %s", namespaceID, pageID, pageTitle);
     }
 

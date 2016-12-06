@@ -19,7 +19,7 @@ public class PageService<T extends Page> extends GenericService<T> {
         this.session = session;
         this.type = type;
 
-        if (Page.class.isAssignableFrom(type)) {
+        if (!Page.class.isAssignableFrom(type)) {
             throw new Exception(String.format("%s must be a Page implementation!", type.getName()));
         }
 
