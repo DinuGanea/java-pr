@@ -12,7 +12,7 @@ import java.util.Set;
  * @author Delara Nasri
  */
 @NodeEntity
-public class Page extends Entity {
+public abstract class Page extends Entity {
 
     /**
      * Needed for XML definition later on (PageExport class)
@@ -24,32 +24,11 @@ public class Page extends Entity {
     public static final String CAT_EL_NAME = "category";
     public static final String CAT_ATT_NAME = "name";
 
-    private int namespaceID;
-    private String pageID;
-    private String pageTitle;
-    private String htmlContent;
+    protected int namespaceID;
+    protected String pageID;
+    protected String pageTitle;
+    protected String htmlContent;
 
-    @Relationship(type = "HAS_CATEGORY")
-    private Set<Category> categories;
-
-
-    public Page() {
-
-    }
-
-
-    /**
-     * Page constructor.
-     *
-     * @param namespaceID page namespace id
-     * @param pageID      page id
-     * @param pageTitle   page title
-     */
-    public Page(int namespaceID, String pageID, String pageTitle) {
-        this.namespaceID = namespaceID;
-        this.pageID = pageID;
-        this.pageTitle = pageTitle;
-    }
 
     /**
      * @return page namespace id
@@ -61,8 +40,9 @@ public class Page extends Entity {
     /**
      * @param namespaceID page namespace id
      */
-    public void setNamespaceID(int namespaceID) {
+    public Page setNamespaceID(int namespaceID) {
         this.namespaceID = namespaceID;
+        return this;
     }
 
     /**
@@ -93,20 +73,6 @@ public class Page extends Entity {
         this.pageTitle = pageTitle;
     }
 
-    /**
-     * @return set of page categories
-     */
-    public Set<Category> getCategories() {
-        return categories;
-    }
-
-    /**
-     * @param categories categories' set
-     */
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
-    }
-
 
     /**
      * @return html content of the page
@@ -128,6 +94,7 @@ public class Page extends Entity {
      * @return string conversion of the object
      */
     public String toString() {
+        System.out.println("test");
         return String.format("%s %s %s", namespaceID, pageID, pageTitle);
     }
 

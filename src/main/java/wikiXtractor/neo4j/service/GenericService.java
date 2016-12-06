@@ -1,13 +1,12 @@
 package wikiXtractor.neo4j.service;
 
 import wikiXtractor.model.Entity;
-import wikiXtractor.neo4j.factory.Neo4jSessionFactory;
 import org.neo4j.ogm.session.Session;
 
 public abstract class GenericService<T> implements Service<T> {
 
-    private static final int DEPTH_LIST = 0;
-    private static final int DEPTH_ENTITY = 1;
+    protected static final int DEPTH_LIST = 0;
+    protected static final int DEPTH_ENTITY = 1;
     protected Session session;
 
     @Override

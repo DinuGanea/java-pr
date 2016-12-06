@@ -1,6 +1,8 @@
 package wikiXtractor.factory;
 
 import wikiXtractor.extractors.LinkExtraction;
+import wikiXtractor.model.Article;
+import wikiXtractor.model.Category;
 import wikiXtractor.model.Page;
 import wikiXtractor.extractors.LinkExtraction;
 import wikiXtractor.model.Page;
@@ -130,7 +132,7 @@ public class PageFactory implements Loggable {
                     page.setHtmlContent(rawPageHtml.toString());
 
                     // Log block-wise number of pages that were till now converted
-                    if(++pageCounter % PAGE_BLOCK_SIZE == 0) {
+                    if (++pageCounter % PAGE_BLOCK_SIZE == 0) {
                         logger.info(String.format("%d page objects created", pageCounter));
                     }
 
@@ -157,7 +159,7 @@ public class PageFactory implements Loggable {
                     String articleName = info[3];
 
                     // create a new page object
-                    page = new Page(namespaceID, articleID, articleName);
+                    page = createPageObject(namespaceID, articleID, articleName);
                 }
             }
 
@@ -177,4 +179,15 @@ public class PageFactory implements Loggable {
         return pages;
     }
 
+
+    protected static Page createPageObject(int namespaceID, String pageID, String pageTitle) throws Exception {
+        switch (namespaceID) {
+            case Article.NAMESPACE_ID:
+                return new Article(namespaceID, pageID, pageTitle);
+            case Category.NAMESPACE_ID:
+                return new Category(namespaceID, pageID, pageTitle);
+            default:
+                throw new Exception(String.format("Unidentified namespaceID %d", namespaceID));
+        }
+    }
 }

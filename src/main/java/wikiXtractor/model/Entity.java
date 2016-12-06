@@ -3,7 +3,17 @@ package wikiXtractor.model;
 
 public abstract class Entity {
 
+    public static final String CUSTOM_ID_PROP_NAME = "customID";
+
     private Long id;
+
+
+    protected int customID;
+
+
+    public int getCustomID() {
+        return customID;
+    }
 
     public Long getId() {
         return id;
@@ -22,11 +32,7 @@ public abstract class Entity {
 
         Entity entity = (Entity) o;
 
-        if (!id.equals(entity.id)) {
-            return false;
-        }
-
-        return true;
+        return id.equals(entity.id);
     }
 
     @Override

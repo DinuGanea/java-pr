@@ -4,13 +4,11 @@ import org.neo4j.ogm.annotation.EndNode;
 import org.neo4j.ogm.annotation.RelationshipEntity;
 import org.neo4j.ogm.annotation.StartNode;
 
-@RelationshipEntity(type = "HAS_CATEGORY")
+@RelationshipEntity(type = Categorisation.TYPE)
 public class Categorisation extends Entity {
 
-    /**
-     * The OGM also requires an public no-args constructor to be able to construct objects,
-     * we’ll make sure all our entities have one.
-     */
+    public static final String TYPE = "CATEGORY_OF";
+
     public Categorisation() {
 
     }
@@ -20,5 +18,25 @@ public class Categorisation extends Entity {
 
     @EndNode
     private Category category;
+
+
+    public Categorisation setStartNode(Page p) {
+        this.page = p;
+        return this;
+    }
+
+    public Categorisation setEndNode(Category c) {
+        this.category = c;
+        return this;
+    }
+
+    public Page getPage() {
+        return page;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
 
 }

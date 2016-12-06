@@ -5,7 +5,7 @@ version '1.0'
 def neo4jVersion = "3.0.0"
 
 // Object-Graph mapping version
-def ogmVersion = "2.0.2"
+def ogmVersion = "2.0.4"
 
 apply plugin: 'java'
 
@@ -50,8 +50,11 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.7'
-    compile 'org.jsoup:jsoup:1.10.1'
     compile "org.neo4j:neo4j-ogm-core:${ogmVersion}"
-    compile group: 'org.neo4j', name: 'neo4j-ogm-embedded-driver', version: "${ogmVersion}"
-    compile "org.neo4j:neo4j:${neo4jVersion}"
+    compile "org.neo4j:neo4j-ogm-embedded-driver:${ogmVersion}"
+    compile 'org.jsoup:jsoup:1.10.1'
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
+
 }

@@ -84,11 +84,11 @@ public class PageExport implements Loggable {
                 Element categories = doc.createElement(Page.CAT_ROOT_EL_NAME);
 
                 // Parse each category and create an element for it
-                for (Category cat : p.getCategories()) {
+                /*for (Category cat : p.getCategories()) {
                     // the category element and it's children could be changed easily from the method
                     // append each category to its parent
                     categories.appendChild(createCategory(cat.getName(), doc));
-                }
+                }*/
 
                 // add categories to the page
                 pageElement.appendChild(categories);
