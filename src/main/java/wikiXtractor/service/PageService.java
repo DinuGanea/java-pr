@@ -2,9 +2,11 @@ package wikiXtractor.service;
 
 import org.neo4j.ogm.cypher.Filter;
 import org.neo4j.ogm.cypher.Filters;
-import org.neo4j.ogm.session.Session;
+
 import wikiXtractor.model.*;
 import wikiXtractor.neo4j.service.GenericService;
+import wikiXtractor.neo4j.session.Session;
+import wikiXtractor.util.Utility;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,9 +32,7 @@ public class PageService<T extends Page> extends GenericService<T> {
     }
 
     public T find(int namespaceID, String title) {
-        Page page = new Article(namespaceID, title);
-
-        Filter filter = new Filter(Entity.CUSTOM_ID_PROP_NAME, page.hashCode());
+        Filter filter = new Filter(Entity.CUSTOM_ID_PROP_NAME, Utility.getMD5(namespaceID + "" + title));
 
         Filters filters = new Filters();
         filters.add(filter);
@@ -50,19 +50,5 @@ public class PageService<T extends Page> extends GenericService<T> {
         Filter filter = new Filter(Page.NS_EL_NAME, namespaceID);
 
         return session.loadAll(getEntityType(), filter, DEPTH_LIST);
-    }
-
-
-    public Collection<Category> findCategoryListOf(Page page) {
-
-        String query = "MATCH (c:Category)-[:PARENT*]->(:Category)<-[:?*]-(p:Product{'?':'?'})";
-
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("relationship", Categorisation.TYPE);
-        params.put(Entity.CUSTOM_ID_PROP_NAME, page.getCustomID() + "");
-
-        session.query(Category.class, query, params).forEach(System.out::println);
-
-        return null;
     }
 }

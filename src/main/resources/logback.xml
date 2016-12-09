@@ -12,9 +12,9 @@
       ~ To just see Cypher statements set the level to "info"
       ~ For finer-grained diagnostics, set the level to "debug".
     -->
-    <logger name="org.neo4j.ogm" level="info" />
+    <logger name="org.neo4j.ogm" level="OFF" />
 
-    <root level="info">
+    <root level="OFF">
         <appender-ref ref="console" />
     </root>
 

@@ -15,23 +15,27 @@ public class Article extends Page {
     @Relationship(type = Categorisation.TYPE, direction = Relationship.INCOMING)
     private Set<Category> categories;
 
+    @Relationship(type = Reference.TYPE, direction = Relationship.OUTGOING)
+    private Set<Article> referals;
 
     public Article() {
-
+        categories = new HashSet<>();
+        referals = new HashSet<>();
     }
 
-    public Article(int namespaceID, String pageTitle) {
-        this(namespaceID, "", pageTitle);
+    public Article(String pageTitle) {
+        this("", pageTitle);
     }
 
 
-    public Article(int namespaceID, String pageID, String pageTitle) {
-        this.namespaceID = namespaceID;
+    public Article(String pageID, String pageTitle) {
+        this.namespaceID = Article.NAMESPACE_ID;
         this.pageID = pageID;
         this.pageTitle = pageTitle;
-        this.customID = hashCode();
+        this.customID = stringHashCode();
 
         categories = new HashSet<>();
+        referals = new HashSet<>();
     }
 
 
@@ -52,5 +56,14 @@ public class Article extends Page {
     public Article addCategory(Category category) {
         categories.add(category);
         return this;
+    }
+
+    public Article addReferal(Article referal) {
+        referals.add(referal);
+        return this;
+    }
+
+    public Set<Article> getReferals() {
+        return referals;
     }
 }

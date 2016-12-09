@@ -1,7 +1,9 @@
 package wikiXtractor.model;
 
+import org.neo4j.graphalgo.impl.shortestpath.Util;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
+import wikiXtractor.util.Utility;
 
 import java.util.Objects;
 import java.util.Set;
@@ -28,7 +30,15 @@ public abstract class Page extends Entity {
     protected String pageID;
     protected String pageTitle;
     protected String htmlContent;
+    protected Set<String> catTitles;
 
+    public Set<String> getCatTitles() {
+        return catTitles;
+    }
+
+    public void setCatTitles(Set<String> catTitles) {
+        this.catTitles = catTitles;
+    }
 
     /**
      * @return page namespace id
@@ -123,7 +133,12 @@ public abstract class Page extends Entity {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(namespaceID, pageTitle);
+        return Utility.hash(namespaceID, pageTitle);
     }
 
+
+
+    public String stringHashCode() {
+        return Utility.getMD5(String.format("%s%s", namespaceID, pageTitle));
+    }
 }

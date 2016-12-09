@@ -1,17 +1,21 @@
 package wikiXtractor.neo4j.service;
 
+import org.neo4j.ogm.session.event.Event;
 import wikiXtractor.model.Entity;
-import org.neo4j.ogm.session.Session;
+import wikiXtractor.neo4j.session.Session;
+
+
+import java.util.Collection;
 
 public abstract class GenericService<T> implements Service<T> {
 
     protected static final int DEPTH_LIST = 0;
-    protected static final int DEPTH_ENTITY = 2;
+    protected static final int DEPTH_ENTITY = 1;
     protected Session session;
 
     @Override
-    public Iterable<T> findAll() {
-        return session.loadAll(getEntityType());
+    public Collection<T> findAll() {
+        return session.loadAll(getEntityType(), 0);
     }
 
     @Override
@@ -25,9 +29,8 @@ public abstract class GenericService<T> implements Service<T> {
     }
 
     @Override
-    public T createOrUpdate(T entity) {
-        session.save(entity);
-        return find(((Entity) entity).getId());
+    public void createOrUpdate(T entity) {
+        session.save(entity, 2);
     }
 
     public abstract Class<T> getEntityType();

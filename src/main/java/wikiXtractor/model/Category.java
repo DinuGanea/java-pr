@@ -17,19 +17,14 @@ public class Category extends Page {
     private Set<Category> subcategories;
 
     public Category() {
-
+        subcategories = new HashSet<>();
     }
 
-    public Category(int namespaceID, String pageTitle) {
-        this(namespaceID, "", pageTitle);
-    }
-
-
-    public Category(int namespaceID, String pageID, String pageTitle) {
-        this.namespaceID = namespaceID;
+    public Category(String pageID, String pageTitle) {
+        this.namespaceID = NAMESPACE_ID;
         this.pageID = pageID;
         this.pageTitle = pageTitle;
-        this.customID = hashCode();
+        this.customID = stringHashCode();
 
         subcategories = new HashSet<>();
     }

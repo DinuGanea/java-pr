@@ -8,10 +8,10 @@ public abstract class Entity {
     private Long id;
 
 
-    protected int customID;
+    protected String customID;
 
 
-    public int getCustomID() {
+    public String getCustomID() {
         return customID;
     }
 

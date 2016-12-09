@@ -4,8 +4,6 @@ import wikiXtractor.extractors.LinkExtraction;
 import wikiXtractor.model.Article;
 import wikiXtractor.model.Category;
 import wikiXtractor.model.Page;
-import wikiXtractor.extractors.LinkExtraction;
-import wikiXtractor.model.Page;
 import wikiXtractor.util.Loggable;
 
 import java.io.BufferedReader;
@@ -30,7 +28,9 @@ public class PageFactory implements Loggable {
 
     // Path to the categories in html article (css selector)
     // Could be declared in LinkExtraction, but we try to keep that class as context-independent as possible
-    private static final String DEFAULT_CATS_SELECTOR = "div#catlinks ul li a";
+    public static final String DEFAULT_CATS_SELECTOR = "div#catlinks ul li a";
+
+    public static final String LINKS_SELECTOR = "a";
 
     // Marks the begin/end of an article
     private static final char LINE_DELIMITER_CHAR = '¤';
@@ -43,11 +43,9 @@ public class PageFactory implements Loggable {
      *
      * @param path path object to the file that is being imported
      * @return buffered reader objects
-     * @throws Exception
+     * @throws InvalidPathException, IOException
      */
-    protected static BufferedReader openForRead(Path path) throws Exception {
-
-        Exception e;
+    protected static BufferedReader openForRead(Path path) throws InvalidPathException, IOException {
 
         /**
          * A BufferedReader object will be used to read the file line by line. We don't want to load it completely into RAM
@@ -66,15 +64,12 @@ public class PageFactory implements Loggable {
 
         } catch (InvalidPathException ipE) {
             logger.error(String.format("File not found in \"%s\"", path.normalize().toAbsolutePath()));
-            e = ipE;
+            throw ipE;
 
         } catch (IOException ioE) {
             logger.error(String.format("Cannot read file \"%s\"", path.getFileName()));
-            e = ioE;
+            throw ioE;
         }
-
-        // throw the exception further. should be caught outside this method for more information
-        throw e;
     }
 
 
@@ -83,7 +78,7 @@ public class PageFactory implements Loggable {
      *
      * @param path path object to the source file
      * @return set of page objects
-     * @throws Exception
+     * @throws InvalidPathException, IOException
      */
     public static Set<Page> build(Path path) throws Exception {
 
@@ -123,18 +118,14 @@ public class PageFactory implements Loggable {
                         continue;
                     }
 
-                    // time to get extract the categories
-                    Set<String> categories = LinkExtraction.extractCategories(rawPageHtml.toString(), DEFAULT_CATS_SELECTOR, page.getPageID());
-
-                    // Todo: don't forget to add category objects
-                    //page.setCategories(categories);
-
-                    page.setHtmlContent(rawPageHtml.toString());
-
                     // Log block-wise number of pages that were till now converted
                     if (++pageCounter % PAGE_BLOCK_SIZE == 0) {
                         logger.info(String.format("%d page objects created", pageCounter));
                     }
+
+                    page.setHtmlContent(rawPageHtml.toString());
+
+                    page.setCatTitles(LinkExtraction.extractLinks(rawPageHtml.toString(), DEFAULT_CATS_SELECTOR, page.getPageTitle()));
 
                     pages.add(page);
 
@@ -183,9 +174,9 @@ public class PageFactory implements Loggable {
     protected static Page createPageObject(int namespaceID, String pageID, String pageTitle) throws Exception {
         switch (namespaceID) {
             case Article.NAMESPACE_ID:
-                return new Article(namespaceID, pageID, pageTitle);
+                return new Article(pageID, pageTitle);
             case Category.NAMESPACE_ID:
-                return new Category(namespaceID, pageID, pageTitle);
+                return new Category(pageID, pageTitle);
             default:
                 throw new Exception(String.format("Unidentified namespaceID %d", namespaceID));
         }

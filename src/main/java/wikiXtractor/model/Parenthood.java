@@ -5,7 +5,7 @@ import org.neo4j.ogm.annotation.RelationshipEntity;
 import org.neo4j.ogm.annotation.StartNode;
 
 @RelationshipEntity(type = Parenthood.TYPE)
-public class Parenthood<T> extends Entity {
+public class Parenthood extends Entity {
 
     public static final String TYPE = "PARENT_OF";
 
@@ -18,27 +18,27 @@ public class Parenthood<T> extends Entity {
     }
 
     @StartNode
-    private T parent;
+    private Category parent;
 
     @EndNode
-    private T child;
+    private Category child;
 
 
-    public Parenthood<T> setStartNode(T parent) {
+    public Parenthood setStartNode(Category parent) {
         this.parent = parent;
         return this;
     }
 
-    public Parenthood<T> setEndNode(T child) {
+    public Parenthood setEndNode(Category child) {
         this.child = child;
         return this;
     }
 
-    public T getParent() {
+    public Category getParent() {
         return parent;
     }
 
-    public T getCategory() {
+    public Category getChild() {
         return child;
     }
 

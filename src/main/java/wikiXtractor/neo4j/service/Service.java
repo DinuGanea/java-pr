@@ -1,13 +1,15 @@
 package wikiXtractor.neo4j.service;
 
 
+import java.util.Collection;
+
 public interface Service<T> {
 
-    Iterable<T> findAll();
+    Collection<T> findAll();
 
     T find(Long id);
 
     void delete(Long id);
 
-    T createOrUpdate(T object);
+    void createOrUpdate(T object);
 }

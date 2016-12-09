@@ -1,8 +1,7 @@
 package wikiXtractor.neo4j.factory;
 
 import org.neo4j.ogm.config.Configuration;
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.session.SessionFactory;
+import wikiXtractor.neo4j.session.Session;
 
 
 public class Neo4jSessionFactory {
