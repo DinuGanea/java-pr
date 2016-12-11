@@ -30,6 +30,7 @@ public class PageFactory implements Loggable {
     // Could be declared in LinkExtraction, but we try to keep that class as context-independent as possible
     public static final String DEFAULT_CATS_SELECTOR = "div#catlinks ul li a";
 
+    // CSS selector for internal wiki links
     public static final String LINKS_SELECTOR = "a";
 
     // Marks the begin/end of an article
@@ -171,6 +172,15 @@ public class PageFactory implements Loggable {
     }
 
 
+    /**
+     * Create a page object implementation based of the given namespace
+     *
+     * @param namespaceID Page object namespace ID
+     * @param pageID Page identifier
+     * @param pageTitle Page title
+     * @return Page implementation
+     * @throws Exception
+     */
     protected static Page createPageObject(int namespaceID, String pageID, String pageTitle) throws Exception {
         switch (namespaceID) {
             case Article.NAMESPACE_ID:

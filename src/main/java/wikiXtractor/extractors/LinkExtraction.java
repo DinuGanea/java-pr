@@ -46,6 +46,13 @@ public class LinkExtraction implements Loggable {
         return links;
     }
 
+    /**
+     * Extract wiki references from raw html content
+     *
+     * @param rawContent HTML content
+     * @param objectID Object reference
+     * @return Set ok links
+     */
     public static HashSet<String> extractWikiLinks(String rawContent, String objectID) {
         HashSet<String> links = new HashSet<>();
 

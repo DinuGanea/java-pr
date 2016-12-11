@@ -5,38 +5,49 @@ import wikiXtractor.Main;
 import wikiXtractor.api.cli.exceptions.InvalidCLIInputException;
 import wikiXtractor.neo4j.manager.SessionManager;
 
-@Parameters(commandDescription = "Reset database files")
+/**
+ * Used to clean domain metadata and initialise a new session in the given directory
+ *
+ * reset <<db-directory>>
+ *
+ * @author Sonia Rooshenas
+ */
+@Parameters(commandDescription = "Reset database domain & metadata")
 public class ResetCommand extends CLICommand<Void> {
 
+    // command name
     private static final String NAME = "reset";
 
+    // path to the database directory
     private String dbDirectoryURI;
 
+    /**
+     * {@inheritDoc}
+     */
     public Void execute() throws Exception {
 
-        validateInput();
+        logger.info("Executing {} command!", getName());
+
+        // Main routine
+        validateInput(1);
         extractParameters();
 
+
+        SessionManager.cleanSessionDomain(dbDirectoryURI);
+
+        // Reset session
         SessionManager sessionManager = new SessionManager(dbDirectoryURI, Main.DOMAIN_NAME);
-        sessionManager.resetSessionDomain();
+        sessionManager.addConstraints()
+                .addIndexes();
+
+        logger.info("{} command successfully executed!", getName());
 
         return null;
     }
 
-
-    public ResetCommand validateInput() throws InvalidCLIInputException {
-
-        if (input == null) {
-            throw new InvalidCLIInputException(String.format("No input found for \"%s\" command!", getName()));
-        }
-
-        if (input.size() != 1) {
-            throw new InvalidCLIInputException(String.format("Too many parameter given for \"%s\" command!", getName()));
-        }
-
-        return this;
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     public ResetCommand extractParameters() {
 
         dbDirectoryURI = input.get(0);
@@ -44,6 +55,9 @@ public class ResetCommand extends CLICommand<Void> {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getName() {
         return NAME;
     }

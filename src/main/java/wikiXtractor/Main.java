@@ -1,17 +1,10 @@
 package wikiXtractor;
 
 import com.beust.jcommander.JCommander;
-import org.neo4j.ogm.session.Session;
 import org.reflections.Reflections;
 import wikiXtractor.api.cli.CLICommand;
-import wikiXtractor.model.Article;
-import wikiXtractor.model.Category;
-import wikiXtractor.neo4j.manager.SessionManager;
-import wikiXtractor.service.ArticleService;
-import wikiXtractor.service.CategoryService;
 import wikiXtractor.util.Loggable;
 
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -25,33 +18,51 @@ import java.util.Set;
  */
 public class Main implements Loggable {
 
+    // Domain of the project. Used for DB metadata and reflection
     public static final String DOMAIN_NAME = Main.class.getPackage().getName();
 
+
+
     public static void main(String args[]) throws Exception {
+        long startTime = System.currentTimeMillis();
 
-
+        JCommander commander = new JCommander();
         try {
-            JCommander commander = new JCommander();
-
-
+            // Parse all classes of the given package
             Reflections reflections = new Reflections(DOMAIN_NAME);
+            // Load classes that are extending from the CLICommand class (we need them for the parser)
             Set<Class<? extends CLICommand>> commands = reflections.getSubTypesOf(CLICommand.class);
 
             for (Class cls : commands) {
+                // Create a new instance for the command class
                 CLICommand command = (CLICommand) cls.newInstance();
-
+                // Add it to the listener
                 commander.addCommand(command.getName(), command);
             }
 
+            // Parse the input
             commander.parse(args);
 
+            // Identify entered command
             String parsedCommand = commander.getParsedCommand();
+            // Extact instance of the entered command
             CLICommand commandObject = (CLICommand) commander.getCommands().get(parsedCommand).getObjects().get(0);
 
+            // Do the routine
             commandObject.execute();
 
+        } catch (NullPointerException npe) {
+
+            logger.error("No command entered. Please check the usage:");
+            commander.usage();
+
+
         } catch (Exception e) {
-            e.printStackTrace();
+
+            logger.error("Oooops an Exception occured! {}", e.getMessage());
+            logger.error(e);
         }
+
+        logger.info("Runtime {} sec.", Math.ceil((System.currentTimeMillis() - startTime) / 1000));
     }
 }

@@ -137,8 +137,12 @@ public abstract class Page extends Entity {
     }
 
 
-
+    /**
+     * Create a string hash code, as the int one generates some collisions
+     *
+     * @return String hash code
+     */
     public String stringHashCode() {
-        return Utility.getMD5(String.format("%s%s", namespaceID, pageTitle));
+        return Utility.customHash(namespaceID, pageTitle);
     }
 }
