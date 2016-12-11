@@ -48,7 +48,7 @@ public class ResetCommand extends CLICommand<Void> {
     /**
      * {@inheritDoc}
      */
-    public ResetCommand extractParameters() {
+    public ResetCommand extractParameters() throws Exception {
 
         dbDirectoryURI = input.get(0);
 

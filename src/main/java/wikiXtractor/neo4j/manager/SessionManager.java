@@ -8,6 +8,8 @@ import wikiXtractor.neo4j.factory.Neo4jSessionFactory;
 import wikiXtractor.util.DirectoryManager;
 import wikiXtractor.util.Loggable;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -33,7 +35,7 @@ public class SessionManager implements Loggable {
      * @param uri Relative path to the database
      * @param domain Metadata domain
      */
-    public SessionManager(String uri, String domain) {
+    public SessionManager(String uri, String domain) throws Exception {
         this.uri = uri;
         this.domain = domain;
 
@@ -46,11 +48,13 @@ public class SessionManager implements Loggable {
      *
      * @return SessionManager object
      */
-    public SessionManager openSession() {
+    public SessionManager openSession() throws Exception {
         String fullPath = DirectoryManager.getFullPath(uri);
         String urlLikePath = DirectoryManager.fullPathToURL(fullPath);
 
         logger.info(String.format("Opening session in %s", fullPath));
+
+
 
         // Get the factory object. We don't want to create every time new session object
         Neo4jSessionFactory sessionFactory = new Neo4jSessionFactory(urlLikePath, domain);
@@ -69,7 +73,7 @@ public class SessionManager implements Loggable {
      *
      * @param uri Path to DB directory
      */
-    public static void cleanSessionDomain(String uri) {
+    public static void cleanSessionDomain(String uri) throws Exception {
         logger.info("Cleaning session domain in {}", uri);
         DirectoryManager.cleanDir(uri);
     }

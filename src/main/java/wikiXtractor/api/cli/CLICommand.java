@@ -76,6 +76,6 @@ public abstract class CLICommand<T> implements Command<T>, Loggable {
      *
      * @return Command object
      */
-    public abstract CLICommand extractParameters();
+    public abstract CLICommand extractParameters() throws Exception;
 
 }

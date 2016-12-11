@@ -138,13 +138,17 @@ public class PageInfoCommand extends CLICommand<Void> {
         return null;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     public String getName() {
         return NAME;
     }
 
-
-    public PageInfoCommand extractParameters() {
+    /**
+     * {@inheritDoc}
+     */
+    public PageInfoCommand extractParameters() throws Exception {
 
         dbDirectoryURI = DirectoryManager.getFullPath(input.get(0));
         namespaceID = Integer.parseInt(input.get(1));

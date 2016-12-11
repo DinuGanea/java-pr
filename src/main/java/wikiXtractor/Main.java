@@ -61,6 +61,7 @@ public class Main implements Loggable {
 
             logger.error("Oooops an Exception occured! {}", e.getMessage());
             logger.error(e);
+            e.printStackTrace();
         }
 
         logger.info("Runtime {} sec.", Math.ceil((System.currentTimeMillis() - startTime) / 1000));

@@ -181,7 +181,7 @@ public class CategoryLinksCommand extends CLICommand<Void> {
     /**
      * {@inheritDoc}
      */
-    public CategoryLinksCommand extractParameters() {
+    public CategoryLinksCommand extractParameters() throws Exception {
 
         dbDirectoryURI = DirectoryManager.getFullPath(input.get(0));
 

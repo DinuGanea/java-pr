@@ -22,7 +22,14 @@ public class DirectoryManager {
      * @param uri Relative path
      * @return Full path
      */
-    public static String getFullPath(String uri) {
+    public static String getFullPath(String uri) throws Exception {
+
+        File output = new File(uri);
+        // Make sure to construct the path to the file
+        if (output.getParentFile() != null && !output.getParentFile().exists() && !output.getParentFile().mkdirs()) {
+            throw new Exception("Could not create the database dir into " + uri);
+        }
+
         Path absolutePath = Paths.get(uri).toAbsolutePath();
         return absolutePath.toString();
     }
@@ -46,11 +53,13 @@ public class DirectoryManager {
      *
      * @param uri Relative path
      */
-    public static void cleanDir(String uri) {
+    public static void cleanDir(String uri) throws Exception {
         try {
             FileUtils.cleanDirectory(new File(getFullPath(uri)));
         } catch (IOException e) {
-            // Nothing to be done. if the inventory/file doesn't exists, it's automatically clean :)
+            // We're not actually writng a file
+        } catch (IllegalArgumentException iae) {
+            // Nothing to be done. if the inventory/file doesn 't exists, it's automatically clean :)
         }
     }
 

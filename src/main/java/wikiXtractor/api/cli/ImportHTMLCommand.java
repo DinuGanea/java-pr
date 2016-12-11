@@ -105,7 +105,7 @@ public class ImportHTMLCommand extends CLICommand<Void> {
     /**
      * {@inheritDoc}
      */
-    public ImportHTMLCommand extractParameters() {
+    public ImportHTMLCommand extractParameters() throws Exception {
 
         dbDirectoryURI = DirectoryManager.getFullPath(input.get(0));
         htmlFileURI = DirectoryManager.getFullPath(input.get(1));

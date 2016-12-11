@@ -132,7 +132,7 @@ public class ArticleLinksCommand extends CLICommand<Void> {
     /**
      * {@inheritDoc}
      */
-    public ArticleLinksCommand extractParameters() {
+    public ArticleLinksCommand extractParameters() throws Exception {
 
         dbDirectoryURI = DirectoryManager.getFullPath(input.get(0));
 
