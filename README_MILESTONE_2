@@ -1,0 +1,98 @@
+WikiXtractor Dokumentation (v2.0)
+---------------------
+
+ *
+ * Autoren
+ * Ausführung
+ * Logging
+ * Bugs
+ * TODOs
+
+
+AUTOREN
+---------------------
+
+ Projekt Contributors und Aufgabe Verteilung:
+
+ MILESTONE #2
+
+     Dinu Ganea
+       - Neo4j OGM Session Management
+       - Neo4j CRUD Services
+       - API Abstraction Layer
+
+     Ionut Urs
+       - CRUD Services Implementierungen
+       - Utility classes
+
+     Sonia Rooshenas
+       - Konsole API Kommandos
+       - Optimierungen fuer CRUD Services
+
+     Delara Nasri
+       - Model layer
+       - DB Relationship model
+
+
+
+
+ANWENDUNG
+---------------------
+
+ Die JAR Datei wird über die Konsole ausgefürht mit dem folgenden Befehl:
+
+ java -Xmx2g -jar WikiXtractor.jar
+
+ Wenn der Aufruf ohne Argument erfolgt, werden die Usages anzegeigt.
+
+ Zur Verfügung stehen aber Folgende Kommandos:
+
+ - java -Xmx2g -jar WikiXtractor.jar reset <db-dir>
+    (Datenbank im angegebenen Verzeichnis löschen und eine neue leere Datenbank generieren)
+
+ - java -Xmx2g -jar WikiXtractor.jar importhtml <DB-Directory> <HTML-Input-File>
+    (Angegebene HTML-Dump-Datei in die Datenbank importieren.)
+
+ - java -Xmx2g -jar WikiXtractor.jar categorylinks <DB-Directory>
+    (Kategorien-Links extrahieren und in Datenbank einfügen)
+
+ - java -Xmx2g -jar WikiXtractor.jar articlelinks <DB-Directory>
+    (Links zwischen Artikeln extrahieren und in Datenbank einfügen)
+
+ - java -Xmx2g -jar WikiXtractor.jar pageinfo <DB-Directory> <namespaceID> <page-title>
+    (Informationen über angegebene Seite auf der Konsole ausgeben)
+
+
+
+
+LOGGING
+---------------------
+
+ Exceptions und Meldungen über den Programmfortschritt werden sowohl in der Konsole als auch in die wikiXtractor/wikiXtractor.log
+ Datei geloggt. Der Log Level ist auf debug gesetzt.
+
+
+
+
+BUGS
+---------------------
+
+ Es gibt noch keine bekannte Bugs!
+
+
+
+
+TODOs
+---------------------
+ OGM community embedded driver muss umgeschrieben werden, damit die Performance (bzw. Laufzeit) optimiert wird
+ https://github.com/neo4j/neo4j-ogm/tree/master/embedded-driver/src/main/java/org/neo4j/ogm/drivers/embedded
+
+ CQL vermeiden und mit Service Methoden ersetzen.
+
+ CLICommand mit einem Hook erweitern, um die Standard routine der Base Klasse zu überlassen.
+
+
+
+
+
+

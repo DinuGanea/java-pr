@@ -44,7 +44,14 @@ public class DirectoryManager {
      * @return URL like path
      */
     public static String fullPathToURL(String fullPath) {
-        return String.format("file:%s", fullPath);
+        if (File.separatorChar != '/') {
+            fullPath = fullPath.replace(File.separatorChar, '/');
+        }
+        if (!fullPath.startsWith("/")) {
+            fullPath = "/" + fullPath;
+        }
+
+        return "file:" + fullPath;
     }
 
 
