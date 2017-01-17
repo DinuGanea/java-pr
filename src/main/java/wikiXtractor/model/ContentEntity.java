@@ -15,6 +15,9 @@ import java.util.Set;
 @NodeEntity
 public abstract class ContentEntity extends Entity {
 
+    // Name of the custom ID column
+    public static final String RAW_TITLE_KEY = "rawTitle";
+
     public static final int MONUMENT_NODE = 1;
     public static final int CITY_NODE = 2;
     public static final int PERSON_NODE = 3;

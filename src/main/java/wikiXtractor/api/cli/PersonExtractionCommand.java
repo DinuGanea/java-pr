@@ -128,6 +128,10 @@ public class PersonExtractionCommand extends CLICommand<Void> {
             session.getTransaction().commit();
 
         } catch (Exception e) {
+
+
+            e.printStackTrace();
+
             if (session.getTransaction().status() != Transaction.Status.OPEN) {
                 session.getTransaction().rollback();
             }

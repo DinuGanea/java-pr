@@ -155,6 +155,7 @@ public class CityExtractionCommand extends CLICommand<Void> {
         return new HashSet<String>() {{
             add(ImportHTMLCommand.class.getSimpleName());
             add(EntityExtractionCommand.class.getSimpleName());
+            //add(PersonExtractionCommand.class.getSimpleName());
         }};
     }
 }

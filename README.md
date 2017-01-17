@@ -227,6 +227,17 @@ Die JAR Datei wird ueber die Konsole ausgefuerht mit dem folgenden Befehl:
         java -Xmx4g -jar WikiXtractor-3.0.jar executetasks /home/user/files/graphdb tasks.txt
         java -Xmx4g -jar WikiXtractor-3.0.jar queryentity /home/user/files/graphdb "Shivaji"
 
+ Task File:
+
+        HTMLDumpImport html.txt
+        CategoryLinkExtraction
+        ArticleLinkExtraction
+        EntityBaseExtraction
+        PersonExtraction
+        CityExtraction
+        MonumentExtraction
+
+
 
 
 

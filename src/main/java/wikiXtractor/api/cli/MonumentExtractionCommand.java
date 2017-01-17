@@ -161,6 +161,8 @@ public class MonumentExtractionCommand extends CLICommand<Void> {
         return new HashSet<String>() {{
             add(ImportHTMLCommand.class.getSimpleName());
             add(EntityExtractionCommand.class.getSimpleName());
+            //add(PersonExtractionCommand.class.getSimpleName());
+            //add(CityExtractionCommand.class.getSimpleName());
         }};
     }
 }

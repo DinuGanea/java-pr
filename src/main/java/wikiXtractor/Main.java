@@ -42,6 +42,7 @@ public class Main implements Loggable {
 
             // Parse the input
             commander.parse(args);
+            //commander.parse("executetasks", "graph-db", "../test.txt");
 
             // Identify entered command
             String parsedCommand = commander.getParsedCommand();

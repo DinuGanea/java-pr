@@ -3,6 +3,7 @@ package wikiXtractor.neo4j.manager;
 
 
 import org.neo4j.ogm.session.Session;
+import wikiXtractor.model.ContentEntity;
 import wikiXtractor.model.Entity;
 import wikiXtractor.neo4j.factory.Neo4jSessionFactory;
 import wikiXtractor.util.DirectoryManager;
@@ -140,6 +141,13 @@ public class SessionManager implements Loggable {
         session.query(String.format("CREATE INDEX ON :Category(%s)", Entity.CUSTOM_ID_PROP_NAME), Collections.emptyMap());
         // Index on customID property of Article object
         session.query(String.format("CREATE INDEX ON :Article(%s)", Entity.CUSTOM_ID_PROP_NAME), Collections.emptyMap());
+
+        // Index on rawTitle property of Person object
+        session.query(String.format("CREATE INDEX ON :Person(%s)", ContentEntity.RAW_TITLE_KEY), Collections.emptyMap());
+        // Index on rawTitle property of City object
+        session.query(String.format("CREATE INDEX ON :City(%s)", ContentEntity.RAW_TITLE_KEY), Collections.emptyMap());
+        // Index on rawTitle property of Monument object
+        session.query(String.format("CREATE INDEX ON :Monument(%s)", ContentEntity.RAW_TITLE_KEY), Collections.emptyMap());
 
         logger.info("Indexes added");
 
