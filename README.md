@@ -136,7 +136,7 @@ AUTOREN
         wikiXtractor.api.cli.MonumentExtractionCommand
 
 
-##### Sonia Rooshenas
+##### Delara Nasri
 ###### Datenmodell Erweiterng:
 
         wikiXtractor.model.ContentEntity
