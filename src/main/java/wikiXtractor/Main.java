@@ -56,11 +56,12 @@ public class Main implements Loggable {
             logger.error("No command entered. Please check the usage:");
             commander.usage();
 
+            npe.printStackTrace();
 
         } catch (Exception e) {
 
             logger.error("Oooops an Exception occured! {}", e.getMessage());
-            logger.error(e);
+            logger.error(e.getMessage(), e);
             e.printStackTrace();
         }
 

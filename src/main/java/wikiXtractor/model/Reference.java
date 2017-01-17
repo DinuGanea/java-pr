@@ -15,10 +15,10 @@ public class Reference extends Entity {
     public static final String TYPE = "REFERS_TO";
 
     @StartNode
-    private Article referral;
+    private Entity referral;
 
     @EndNode
-    private Article referrer;
+    private Entity referrer;
 
     /**
      * The OGM requires an public no-args constructor to be able to construct objects.
@@ -41,7 +41,7 @@ public class Reference extends Entity {
      *
      * @return Referral article object
      */
-    public Article getEndNode() {
+    public Entity getEndNode() {
         return referral;
     }
 
@@ -50,7 +50,7 @@ public class Reference extends Entity {
      *
      * @return Referrer article object
      */
-    public Article getStartNode() {
+    public Entity getStartNode() {
         return referrer;
     }
 

@@ -36,7 +36,7 @@ public class ResetCommand extends CLICommand<Void> {
         SessionManager.cleanSessionDomain(dbDirectoryURI);
 
         // Reset session
-        SessionManager sessionManager = new SessionManager(dbDirectoryURI, Main.DOMAIN_NAME);
+        SessionManager sessionManager = SessionManager.getInstance(dbDirectoryURI, Main.DOMAIN_NAME);
         sessionManager.addConstraints()
                 .addIndexes();
 

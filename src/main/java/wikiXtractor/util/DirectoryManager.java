@@ -17,21 +17,37 @@ import java.nio.file.Paths;
 public class DirectoryManager {
 
     /**
-     * Convert given URI to full directory path
+     * Convert given URI to full directory path (creating directories if necessary)
      *
      * @param uri Relative path
      * @return Full path
      */
-    public static String getFullPath(String uri) throws Exception {
+    public static String createFullPathTo(String uri) throws Exception {
 
         File output = new File(uri);
         // Make sure to construct the path to the file
         if (output.getParentFile() != null && !output.getParentFile().exists() && !output.getParentFile().mkdirs()) {
-            throw new Exception("Could not create the database dir into " + uri);
+            throw new Exception("Counldn't create the full path for the given URI:  " + uri);
         }
 
-        Path absolutePath = Paths.get(uri).toAbsolutePath();
-        return absolutePath.toString();
+        return getFullPath(uri);
+    }
+
+
+    /**
+     * Get full path out of given URI
+     *
+     * @param uri - Relative path
+     * @return - Absolute path
+     */
+    public static String getFullPath(String uri) throws Exception {
+        try {
+            Path absolutePath = Paths.get(uri).toAbsolutePath();
+            return absolutePath.toString();
+        } catch (Exception e) {
+            throw new Exception("Counldn't get the full path for the given URI:  " + uri);
+        }
+
     }
 
 
@@ -62,7 +78,7 @@ public class DirectoryManager {
      */
     public static void cleanDir(String uri) throws Exception {
         try {
-            FileUtils.cleanDirectory(new File(getFullPath(uri)));
+            FileUtils.cleanDirectory(new File(createFullPathTo(uri)));
         } catch (IOException e) {
             // We're not actually writng a file
         } catch (IllegalArgumentException iae) {

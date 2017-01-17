@@ -6,7 +6,6 @@ import com.beust.jcommander.Parameters;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.transaction.Transaction;
 import wikiXtractor.Main;
-import wikiXtractor.api.cli.exceptions.InvalidCLIInputException;
 import wikiXtractor.factory.PageFactory;
 import wikiXtractor.model.Page;
 import wikiXtractor.neo4j.manager.SessionManager;
@@ -27,7 +26,7 @@ import java.util.Set;
 public class ImportHTMLCommand extends CLICommand<Void> {
 
     // command name
-    private static final String NAME = "importhtml";
+    private static final String NAME = "createdb";
 
     // maximal query block-size pro transaction
     private static final int BATCH_INSERT_BLOCK_SIZE = 2000;
@@ -52,8 +51,13 @@ public class ImportHTMLCommand extends CLICommand<Void> {
         // Get pages from factory
         Set<Page> pages = PageFactory.build(Paths.get(htmlFileURI));
 
+        // Reset session domain
+        SessionManager.cleanSessionDomain(dbDirectoryURI);
+
         // Init session
-        SessionManager sessionManager = new SessionManager(dbDirectoryURI, Main.DOMAIN_NAME);
+        SessionManager sessionManager = SessionManager.getInstance(dbDirectoryURI, Main.DOMAIN_NAME);
+        sessionManager.addConstraints().addIndexes();
+
         Session session = sessionManager.getSession();
 
         // Start a service for db operations on db page
@@ -81,6 +85,11 @@ public class ImportHTMLCommand extends CLICommand<Void> {
                 session.getTransaction().commit();
             }
 
+            if (session.getTransaction() != null) {
+                session.getTransaction().close();
+            }
+
+
         } catch (Exception e) {
             if (session.getTransaction().status() != Transaction.Status.OPEN) {
                 session.getTransaction().rollback();
@@ -107,8 +116,8 @@ public class ImportHTMLCommand extends CLICommand<Void> {
      */
     public ImportHTMLCommand extractParameters() throws Exception {
 
-        dbDirectoryURI = DirectoryManager.getFullPath(input.get(0));
-        htmlFileURI = DirectoryManager.getFullPath(input.get(1));
+        dbDirectoryURI = DirectoryManager.createFullPathTo(input.get(0));
+        htmlFileURI = DirectoryManager.createFullPathTo(input.get(1));
 
         return this;
     }

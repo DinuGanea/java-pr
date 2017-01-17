@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Generic DB sevice ONLY for page objects. It can accept different instances type tough, to be more specific
+ * Generic DB service ONLY for page objects. It can accept different instances type tough, to be more specific
  * If unsure what type of page object is needed, give the Page.class as type.
  *
  *
@@ -26,7 +26,7 @@ public class PageService<T extends Page> extends GenericService<T> {
     private Class<T> type;
 
     /**
-     * Create a DB service for the givin class type.
+     * Create a DB service for the given class type.
      *
      * @param session Neo4j DB session
      * @param type Class type

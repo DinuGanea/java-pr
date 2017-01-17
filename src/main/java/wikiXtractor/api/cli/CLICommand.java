@@ -4,19 +4,20 @@ package wikiXtractor.api.cli;
 import com.beust.jcommander.Parameter;
 import wikiXtractor.api.Command;
 import wikiXtractor.api.cli.exceptions.InvalidCLIInputException;
-import wikiXtractor.api.cli.exceptions.InvalidCLIParameterException;
 import wikiXtractor.util.Loggable;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * CLI command abstraction that tracks the input and defines methods for every CLI command
  *
- *
  * @param <T> command line command return type
  * @author Dinu Ganea
  */
-public abstract class CLICommand<T> implements Command<T>, Loggable {
+public abstract class CLICommand<T> implements Command, Runnable, Loggable {
 
     /**
      * VERY VERY VERY BAD! Console commands shouldn't be specified that way. Every parameter should define a label.
@@ -70,6 +71,39 @@ public abstract class CLICommand<T> implements Command<T>, Loggable {
 
         return this;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void run() {
+        try {
+            execute();
+        } catch (Exception e) {
+            logger.error("Oooops, an exception occurred. Boiling out");
+            logger.error(e.getMessage(), e);
+            System.exit(1);
+        }
+
+    }
+
+    /**
+     * Assigned a personalised input to a command object
+     *
+     * @param input Array of input parameters
+     * @return CLICommand instance
+     */
+    public CLICommand setInput(String... input) {
+        this.input = Arrays.asList(input);
+        return this;
+    }
+
+    /**
+     * @return dependencies of the command (commands that have to be executed before this command)
+     */
+    public Set<String> getDependencies() {
+        return new HashSet<>();
+    }
+
 
     /**
      * Map every list element of input to a class variable.

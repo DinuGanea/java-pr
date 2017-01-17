@@ -4,14 +4,15 @@ import com.beust.jcommander.Parameters;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.transaction.Transaction;
 import wikiXtractor.Main;
-import wikiXtractor.api.cli.exceptions.InvalidCLIInputException;
 import wikiXtractor.extractors.LinkExtraction;
+import wikiXtractor.factory.PageFactory;
 import wikiXtractor.model.Article;
 import wikiXtractor.neo4j.manager.SessionManager;
 import wikiXtractor.service.ArticleService;
 import wikiXtractor.util.DirectoryManager;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -29,10 +30,12 @@ public class ArticleLinksCommand extends CLICommand<Void> {
     private static final int BATCH_INSERT_BLOCK_SIZE = 2000;
 
     // command name
-    private static final String NAME = "articlelinks";
+    private static final String NAME = "ArticleLinkExtraction";
 
     // path to directory path
     private String dbDirectoryURI;
+
+    private int maxRetries;
 
     /**
      * {@inheritDoc}
@@ -46,7 +49,7 @@ public class ArticleLinksCommand extends CLICommand<Void> {
         extractParameters();
 
         // Init session
-        SessionManager sessionManager = new SessionManager(dbDirectoryURI, Main.DOMAIN_NAME);
+        SessionManager sessionManager = SessionManager.getInstance(dbDirectoryURI, Main.DOMAIN_NAME);
         Session session = sessionManager.getSession();
 
         session.beginTransaction();
@@ -70,7 +73,7 @@ public class ArticleLinksCommand extends CLICommand<Void> {
             for (Article a : articles.values()) {
 
                 // Extract article links at this point
-                Set<String> articleLinks = LinkExtraction.extractWikiLinks(a.getHtmlContent(), a.getPageTitle());
+                Set<String> articleLinks = LinkExtraction.extractLinks(a.getHtmlContent(), PageFactory.LINKS_SELECTOR, PageFactory.WIKI_LINKS_HREF_PATTERN, a.getPageTitle()).keySet();
 
                 updated = false;
                 // For each links, check existence of the article
@@ -97,7 +100,7 @@ public class ArticleLinksCommand extends CLICommand<Void> {
 
                 // Max block-size reached
                 if (objectsUpdated % BATCH_INSERT_BLOCK_SIZE == 0) {
-                    logger.info("{} page objects updated with a total of {} relationshiops", objectsUpdated, relationships);
+                    logger.info("{} page objects updated with a total of {} relationships", objectsUpdated, relationships);
                     session.getTransaction().commit();
                     session.beginTransaction();
                 }
@@ -109,8 +112,17 @@ public class ArticleLinksCommand extends CLICommand<Void> {
                 session.getTransaction().commit();
             }
 
+            if (session.getTransaction() != null) {
+                session.getTransaction().close();
+            }
+
+            articles.clear();
+
 
         } catch (Exception e) {
+
+            logger.error(e.getMessage(), e);
+
             if (session.getTransaction().status() != Transaction.Status.OPEN) {
                 session.getTransaction().rollback();
             }
@@ -134,10 +146,16 @@ public class ArticleLinksCommand extends CLICommand<Void> {
      */
     public ArticleLinksCommand extractParameters() throws Exception {
 
-        dbDirectoryURI = DirectoryManager.getFullPath(input.get(0));
+        dbDirectoryURI = DirectoryManager.createFullPathTo(input.get(0));
 
         return this;
     }
 
 
+    public Set<String> getDependencies() {
+        return new HashSet<String>() {{
+            add(ImportHTMLCommand.class.getSimpleName());
+            add(CategoryLinksCommand.class.getSimpleName());
+        }};
+    }
 }

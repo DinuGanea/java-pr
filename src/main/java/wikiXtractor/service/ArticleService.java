@@ -236,5 +236,31 @@ public class ArticleService extends PageService<Article> implements Loggable {
 
         return referrals;
     }
+
+
+    /**
+     * Get all linked entities to this article
+     *
+     * @param article Article objects
+     * @return LinkedHashMap, whose key is the entity name, and the value the object itself
+     */
+    public LinkedHashMap<String, ContentEntity> getLinkedObjects(Article article) {
+        LinkedHashMap<String, ContentEntity> linkedObjects = new LinkedHashMap<>();
+
+        String query = String.format("MATCH (article:Article)-[:`%s`]->(e:ContentEntity) WHERE ID(article) = %s return e",
+                Reference.TYPE,
+                article.getId()
+        );
+
+        Result result = session.query(query, Collections.emptyMap());
+
+        // Hydrate results to the LinkedHashMap object
+        result.forEach(entry -> {
+            ContentEntity e = (ContentEntity) entry.get("e");
+            linkedObjects.put(e.getRawTitle(), e);
+        });
+
+        return linkedObjects;
+    }
 }
 

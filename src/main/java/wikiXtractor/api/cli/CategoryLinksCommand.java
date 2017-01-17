@@ -1,21 +1,19 @@
 package wikiXtractor.api.cli;
 
 
-
 import com.beust.jcommander.Parameters;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.transaction.Transaction;
 import wikiXtractor.Main;
-import wikiXtractor.api.cli.exceptions.InvalidCLIInputException;
 import wikiXtractor.model.Article;
 import wikiXtractor.model.Category;
 import wikiXtractor.neo4j.manager.SessionManager;
-
 import wikiXtractor.service.ArticleService;
 import wikiXtractor.service.CategoryService;
 import wikiXtractor.util.DirectoryManager;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -32,7 +30,7 @@ public class CategoryLinksCommand extends CLICommand<Void> {
     private static final int BATCH_INSERT_BLOCK_SIZE = 2000;
 
     // command name
-    private static final String NAME = "categorylinks";
+    private static final String NAME = "CategoryLinkExtraction";
 
     // absolute/relative path to db directory
     private String dbDirectoryURI;
@@ -49,7 +47,7 @@ public class CategoryLinksCommand extends CLICommand<Void> {
         extractParameters();
 
         // Init session
-        SessionManager sessionManager = new SessionManager(dbDirectoryURI, Main.DOMAIN_NAME);
+        SessionManager sessionManager = SessionManager.getInstance(dbDirectoryURI, Main.DOMAIN_NAME);
         Session session = sessionManager.getSession();
 
         session.beginTransaction();
@@ -158,6 +156,12 @@ public class CategoryLinksCommand extends CLICommand<Void> {
                 session.getTransaction().commit();
             }
 
+            if (session.getTransaction() != null) {
+                session.getTransaction().close();
+            }
+
+            catMap.clear();
+            articles.clear();
 
         } catch (Exception e) {
             if (session.getTransaction().status() != Transaction.Status.OPEN) {
@@ -183,9 +187,19 @@ public class CategoryLinksCommand extends CLICommand<Void> {
      */
     public CategoryLinksCommand extractParameters() throws Exception {
 
-        dbDirectoryURI = DirectoryManager.getFullPath(input.get(0));
+        dbDirectoryURI = DirectoryManager.createFullPathTo(input.get(0));
 
         return this;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Set<String> getDependencies() {
+        return new HashSet<String>() {{
+            add(ImportHTMLCommand.class.getSimpleName());
+        }};
     }
 
 }

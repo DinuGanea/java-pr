@@ -33,6 +33,8 @@ public class PageFactory implements Loggable {
     // CSS selector for internal wiki links
     public static final String LINKS_SELECTOR = "a";
 
+    public static final String WIKI_LINKS_HREF_PATTERN = "^(?=/wiki/)[^.:]*$";
+
     // Marks the begin/end of an article
     private static final char LINE_DELIMITER_CHAR = '¤';
 
@@ -126,7 +128,7 @@ public class PageFactory implements Loggable {
 
                     page.setHtmlContent(rawPageHtml.toString());
 
-                    page.setCatTitles(LinkExtraction.extractLinks(rawPageHtml.toString(), DEFAULT_CATS_SELECTOR, page.getPageTitle()));
+                    page.setCatTitles(LinkExtraction.extractLinks(rawPageHtml.toString(), DEFAULT_CATS_SELECTOR, page.getPageTitle()).keySet());
 
                     pages.add(page);
 
@@ -164,6 +166,8 @@ public class PageFactory implements Loggable {
             // append line to the string builder (the actual html page)
             rawPageHtml.append(line);
         }
+
+        reader.close();
 
 
         logger.info(String.format("A total of %d page objects successfully created.", pages.size()));

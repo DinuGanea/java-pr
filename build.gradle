@@ -3,7 +3,7 @@ plugins {
 }
 
 // Project version (effectively milestone)
-version '2.0'
+version '3.0'
 
 // Neo4j version
 def neo4jVersion = "3.0.0"
@@ -39,7 +39,6 @@ repositories {
 
 // Add here the dependencies
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.7'
     compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.7'
     compile "org.neo4j:neo4j-ogm-core:${ogmVersion}"
@@ -47,5 +46,5 @@ dependencies {
     compile 'org.jsoup:jsoup:1.10.1'
     compile group: 'com.beust', name: 'jcommander', version: '1.17'
     compile group: 'org.reflections', name: 'reflections', version: '0.9.10'
-    // compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
+    //compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.6.1'
 }

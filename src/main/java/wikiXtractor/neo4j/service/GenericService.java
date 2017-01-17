@@ -1,11 +1,15 @@
 package wikiXtractor.neo4j.service;
 
+import org.neo4j.kernel.DeadlockDetectedException;
+import org.neo4j.ogm.model.Result;
 import org.neo4j.ogm.session.Session;
 import org.neo4j.ogm.session.event.Event;
 import wikiXtractor.model.Entity;
 
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Another abstraction layer for the DB operations services.
@@ -20,7 +24,7 @@ public abstract class GenericService<T> implements Service<T> {
     // Defines how wide will the DB operation influence objects and/or instantiate them
     // The bigger depth, the bigger runtime
     // Use mainly for mass search operation
-    protected static final int DEPTH_LIST = 0;
+    protected static final int DEPTH_LIST = 2;
     // Use for single entity operation
     protected static final int DEPTH_ENTITY = 1;
 

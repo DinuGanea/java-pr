@@ -8,8 +8,6 @@ import wikiXtractor.neo4j.factory.Neo4jSessionFactory;
 import wikiXtractor.util.DirectoryManager;
 import wikiXtractor.util.Loggable;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -19,6 +17,8 @@ import java.util.HashMap;
  * @author Dinu Ganea
  */
 public class SessionManager implements Loggable {
+
+    protected static SessionManager instance = null;
 
     // DB session object
     protected Session session;
@@ -31,15 +31,34 @@ public class SessionManager implements Loggable {
 
     /**
      * Starts a new manager
+     * Won't allow instantiation of the session object by default. Use singleton
      *
      * @param uri Relative path to the database
      * @param domain Metadata domain
      */
-    public SessionManager(String uri, String domain) throws Exception {
+    protected SessionManager(String uri, String domain) throws Exception {
         this.uri = uri;
         this.domain = domain;
 
-        openSession();
+    }
+
+
+    /**
+     * Singleton
+     *
+     * @param uri Relative path to the database
+     * @param domain Metadata domain
+     * @return SessionManager instance
+     * @throws Exception
+     */
+    public static SessionManager getInstance(String uri, String domain) throws Exception {
+        if (instance == null) {
+            instance = new SessionManager(uri, domain);
+            // Will create metadata only once
+            instance.openSession();
+        }
+
+        return instance;
     }
 
 
@@ -49,7 +68,7 @@ public class SessionManager implements Loggable {
      * @return SessionManager object
      */
     public SessionManager openSession() throws Exception {
-        String fullPath = DirectoryManager.getFullPath(uri);
+        String fullPath = DirectoryManager.createFullPathTo(uri);
         String urlLikePath = DirectoryManager.fullPathToURL(fullPath);
 
         logger.info(String.format("Opening session in %s", fullPath));
